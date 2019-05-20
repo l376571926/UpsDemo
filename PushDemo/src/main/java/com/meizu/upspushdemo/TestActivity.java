@@ -25,13 +25,16 @@
 package com.meizu.upspushdemo;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import com.meizu.upspushsdklib.util.UpsLogger;
+import androidx.core.app.ShareCompat;
 
-public class TestActivity extends Activity{
+import com.socks.library.KLog;
+
+public class TestActivity extends Activity {
 
     TextView tvExtra;
 
@@ -40,24 +43,32 @@ public class TestActivity extends Activity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
         tvExtra = (TextView) findViewById(R.id.tv_extra);
-        tvExtra.setText("key "+getIntent().getStringExtra("key"));
+        Intent intent = getIntent();
+        String value = intent.getStringExtra("key");
+        tvExtra.setText("key->" + value);
 
-        Uri uri =getIntent().getData();
-        if(uri != null){
-            UpsLogger.e(this, "scheme: "+uri.getScheme());
-            UpsLogger.e(this, "host: "+uri.getHost());
-            UpsLogger.e(this, "port: "+uri.getPort());
-            UpsLogger.e(this, "path: "+uri.getPath());
-            UpsLogger.e(this, "queryString: "+uri.getQuery());
-            UpsLogger.e(this, "queryParameter: "+uri.getQueryParameter("key"));
+        Uri uri = intent.getData();
+        if (uri != null) {
+            String scheme = uri.getScheme();
+            String host = uri.getHost();
+            int port = uri.getPort();
+            String path = uri.getPath();
+            String query = uri.getQuery();
+//            String key = uri.getQueryParameter("key");
 
-            tvExtra.setText("scheme: "+uri.getScheme() +"\n" +
-                    "host: "+uri.getHost()+"\n" +
-                    "path: "+uri.getPath()+"\n" +
-                    "queryString: "+uri.getQuery()
+            KLog.e("scheme: " + scheme);
+            KLog.e("host: " + host);
+            KLog.e("port: " + port);
+            KLog.e("path: " + path);
+            KLog.e("queryString: " + query);
+//           KLog.e( "queryParameter: " + key);
+
+            tvExtra.setText("scheme: " + scheme + "\n" +
+                    "host: " + host + "\n" +
+                    "path: " + path + "\n" +
+                    "queryString: " + query
             );
         }
-
     }
 
 }

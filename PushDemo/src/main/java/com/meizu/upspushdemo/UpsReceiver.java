@@ -26,14 +26,18 @@ package com.meizu.upspushdemo;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.meizu.upspushsdklib.CommandType;
+import com.meizu.upspushsdklib.Company;
 import com.meizu.upspushsdklib.UpsCommandMessage;
 import com.meizu.upspushsdklib.UpsPushMessage;
 import com.meizu.upspushsdklib.UpsPushMessageReceiver;
 import com.meizu.upspushsdklib.util.UpsLogger;
+import com.socks.library.KLog;
 
 import static com.meizu.upspushdemo.UpsDemoApplication.sendMessage;
 
@@ -41,49 +45,62 @@ import static com.meizu.upspushdemo.UpsDemoApplication.sendMessage;
 public class UpsReceiver extends UpsPushMessageReceiver {
     @Override
     public void onThroughMessage(Context context, UpsPushMessage upsPushMessage) {
-         sendMessage("onThroughMessage: "+upsPushMessage.getContent());
+        sendMessage("onThroughMessage: " + upsPushMessage.getContent());
     }
 
     @Override
     public void onNotificationClicked(Context context, UpsPushMessage upsPushMessage) {
-        sendMessage("onNotificationClicked: "+upsPushMessage);
+        sendMessage("onNotificationClicked: " + upsPushMessage);
     }
 
     @Override
     public void onNotificationArrived(Context context, UpsPushMessage upsPushMessage) {
-        sendMessage("onNotificationArrived: "+upsPushMessage);
+        sendMessage("onNotificationArrived: " + upsPushMessage);
     }
 
     @Override
     public void onNotificationDeleted(Context context, UpsPushMessage upsPushMessage) {
-        sendMessage("onNotificationDeleted: "+upsPushMessage);
+        sendMessage("onNotificationDeleted: " + upsPushMessage);
     }
 
     @Override
     public void onUpsCommandResult(Context context, UpsCommandMessage upsCommandMessage) {
-        UpsLogger.i(this,"UpsReceiver "+upsCommandMessage);
-        switch (upsCommandMessage.getCompany()){
-            case HUAWEI:
-                if(upsCommandMessage.getCommandType() == CommandType.REGISTER){
-                    Bundle bundle = (Bundle) upsCommandMessage.getExtra();
-                    String belongId = bundle.getString("belongId");
-                    UpsLogger.i(this,"hw belongId "+belongId);
-                } else if(upsCommandMessage.getCommandType() == CommandType.UNREGISTER){
-                    UpsLogger.i(this,"hw unregister "+upsCommandMessage);
-                }
+        KLog.e("UpsReceiver " + upsCommandMessage);
+        CommandType commandType = upsCommandMessage.getCommandType();
+        int code = upsCommandMessage.getCode();
+        String commandResult = upsCommandMessage.getCommandResult();
+        Company company = upsCommandMessage.getCompany();
+        String message = upsCommandMessage.getMessage();
+        Object extra = upsCommandMessage.getExtra();
 
-                break;
-            default:
+        if (company == Company.HUAWEI) {
+            if (commandType == CommandType.REGISTER) {
+                Bundle bundle = (Bundle) extra;
+                String belongId = bundle.getString("belongId");
+                KLog.e("hw belongId " + belongId);
+            } else if (commandType == CommandType.UNREGISTER) {
+                KLog.e("hw unregister " + upsCommandMessage);
+            }
+        }
+        if (commandType == CommandType.REGISTER) {
+            KLog.e("推送注册成功token：" + commandResult);
         }
 
         sendMessage("onUpsCommandResult 如下:"
-                +"\n CommandType-> "+upsCommandMessage.getCommandType().name()
-                +"\n Company-> "+upsCommandMessage.getCompany()
-                +"\n Code-> "+upsCommandMessage.getCode()
-                +"\n CommandResult-> "+upsCommandMessage.getCommandResult()
-                + (TextUtils.isEmpty(upsCommandMessage.getMessage()) ? "":"\n Message-> "+upsCommandMessage.getMessage()));
-    }
+                + "\n CommandType-> " + commandType.name()
+                + "\n Company-> " + company
+                + "\n Code-> " + code
+                + "\n CommandResult-> " + commandResult
+                + (TextUtils.isEmpty(message) ? "" : "\n Message-> " + message));
 
+        if (code == 0) {
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+
+            Intent intent = new Intent(context, UpsPermissionActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        }
+    }
 
 
 }
