@@ -36,7 +36,6 @@ import com.meizu.upspushsdklib.Company;
 import com.meizu.upspushsdklib.UpsCommandMessage;
 import com.meizu.upspushsdklib.UpsPushMessage;
 import com.meizu.upspushsdklib.UpsPushMessageReceiver;
-import com.meizu.upspushsdklib.util.UpsLogger;
 import com.socks.library.KLog;
 
 import static com.meizu.upspushdemo.UpsDemoApplication.sendMessage;

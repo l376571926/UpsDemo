@@ -34,6 +34,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.meizu.cloud.pushinternal.DebugLogger;
+import com.meizu.upspushsdklib.UpsPushManager;
 import com.xiaomi.channel.commonutils.logger.LoggerInterface;
 import com.xiaomi.mipush.sdk.Logger;
 
@@ -55,25 +56,9 @@ public class UpsDemoApplication extends Application {
         if (sHandler == null) {
             sHandler = new DemoHandler(getApplicationContext());
         }
-
-        LoggerInterface newLogger = new LoggerInterface() {
-
-            @Override
-            public void setTag(String tag) {
-                // ignore
-            }
-
-            @Override
-            public void log(String content, Throwable t) {
-                Log.d(TAG, content, t);
-            }
-
-            @Override
-            public void log(String content) {
-                Log.d(TAG, content);
-            }
-        };
-        Logger.setLogger(this, newLogger);
+        // TODO: 2019/6/6 0006  此包名：cn.zontek.smartcommunity.test
+        // TODO: 2019/6/6 0006 flyme推送可以收到，集成推送收不到
+        UpsPushManager.register(this, BuildConfig.MEIZU_UPS_APP_ID, BuildConfig.MEIZU_UPS_APP_KEY);
     }
 
     public static DemoHandler getHandler() {
@@ -110,7 +95,7 @@ public class UpsDemoApplication extends Application {
         }
     }
 
-    public static void sendMessage(String log){
+    public static void sendMessage(String log) {
         Message msg = Message.obtain();
         msg.obj = log;
         UpsDemoApplication.getHandler().sendMessage(msg);

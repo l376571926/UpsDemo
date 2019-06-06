@@ -28,164 +28,77 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
+import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.meizu.upspushsdklib.Company;
 import com.meizu.upspushsdklib.UpsPushManager;
-import com.meizu.upspushsdklib.util.UpsConstants;
-import com.meizu.upspushsdklib.util.UpsUtils;
-import com.socks.library.KLog;
+import com.meizu.upspushsdklib.util.UpsLogger;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class MainActivity extends Activity implements View.OnClickListener {
 
-    private Button btnRegister;
-    private Button btnUnRegister;
-    private Button btnSetAlias;
-    private Button btnUnsetAlias;
-    private Button btnEnableDirectMode;
-    private Button btnDisableDirectMode;
-    //选择长连接通知栏类型，用于测试用
-    private Button btnChoosePushChannel;
-
-    private Button btnServerPush;
-
-    private String xmAppId;
-    private String xmAppKey;
-    private String mzAppId;
-    private String mzAppKey;
-
+    private static final String TAG = MainActivity.class.getSimpleName();
     public static List<String> logList = new CopyOnWriteArrayList<String>();
     private TextView mLogView = null;
-
-    public static String xmToken;
-
-
-    public static String UPS_APP_ID = "1005471";
-    public static String UPS_APP_KEY = "784771459d1d42a4b078995e0523f1d5";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         UpsDemoApplication.setMainActivity(this);
-        setContentView(R.layout.activity_main);
-        initView();
-        initMetaData();
-        Intent intent = getIntent();
-        KLog.e("inent " + intent.getStringExtra("oppo"));
-    }
+        ViewDataBinding viewDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        viewDataBinding.setVariable(BR.handler, this);
 
-    private void initView() {
-        btnRegister = (Button) findViewById(R.id.btn_register);
-        btnRegister.setOnClickListener(this);
-        btnUnRegister = (Button) findViewById(R.id.btn_unregister);
-        btnUnRegister.setOnClickListener(this);
-        btnSetAlias = (Button) findViewById(R.id.btn_set_alias);
-        btnSetAlias.setOnClickListener(this);
-        btnUnsetAlias = (Button) findViewById(R.id.btn_unset_alias);
-        btnUnsetAlias.setOnClickListener(this);
         mLogView = (TextView) findViewById(R.id.log);
-        btnServerPush = (Button) findViewById(R.id.btn_server_push);
-        btnServerPush.setOnClickListener(this);
-        btnEnableDirectMode = findViewById(R.id.btn_enable_direct_mode);
-        btnEnableDirectMode.setOnClickListener(this);
-        btnDisableDirectMode = findViewById(R.id.btn_disable_direct_mode);
-        btnDisableDirectMode.setOnClickListener(this);
-        btnChoosePushChannel = findViewById(R.id.btn_choose_company_channel);
-        btnChoosePushChannel.setOnClickListener(this);
+        Intent intent = getIntent();
+        UpsLogger.e(this, "inent " + intent.getStringExtra("oppo"));
     }
-
-    private void initMetaData() {
-        xmAppId = UpsUtils.getMetaStringValueByName(this, UpsConstants.XIAOMI_APP_ID);
-        xmAppKey = UpsUtils.getMetaStringValueByName(this, UpsConstants.XIAOMI_APP_KEY);
-        mzAppId = UpsUtils.getMetaIntValueByName(this, UpsConstants.MEIZU_APP_ID);
-        mzAppKey = UpsUtils.getMetaStringValueByName(this, UpsConstants.MEIZU_APP_KEY);
-        UpsUtils.getMetaIntValueByName(this, "com.huawei.hms.client.appid");
-    }
-
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_enable_direct_mode:
+                Log.e(TAG, "onClick: 启用直连模式");
                 UpsPushManager.enableDirectMode(this, true);
                 break;
-            case R.id.btn_disable_direct_mode:
+            case R.id.btn_disable_direct_mode://选择长连接通知栏类型，用于测试用
+                Log.e(TAG, "onClick: 禁用直连模式");
                 UpsPushManager.enableDirectMode(this, false);
                 break;
             case R.id.btn_choose_company_channel:
+                Log.e(TAG, "onClick: 选择通道");
                 showChooseChannelDiglog();
                 break;
             case R.id.btn_register:
-                UpsPushManager.register(this, UPS_APP_ID, UPS_APP_KEY);
-                //MiPushClient.registerPush(this,xmAppId,xmAppKey);
-                hwIntentUri();
-                intentToUri();
-                KLog.e("MANUFACTURER:" + Build.MANUFACTURER + " model:" + Build.MODEL + " brand:" + Build.BOARD);
+                Log.e(TAG, "onClick: 订阅");
+                UpsPushManager.register(this, BuildConfig.MEIZU_UPS_APP_ID, BuildConfig.MEIZU_UPS_APP_KEY);
+                UpsLogger.e(this, "MANUFACTURER:" + Build.MANUFACTURER + " model:" + Build.MODEL + " brand:" + Build.BOARD);
                 break;
             case R.id.btn_unregister:
-//                UpsPushManager.unRegister(this);
-                //intentToUri();
-                try {
-//                    String action = "intent://cn.zontek.smartcommunity/com.meizu.upspushdemo.TestActivity?key=value&key1=value1&key2=value2#Intent;scheme=zontek;launchFlags=0x10000000;end";
-                    String action = "intent:#Intent;launchFlags=0x10000000;component=cn.zontek.smartcommunity/com.meizu.upspushdemo.TestActivity;S.key=value;S.key1=value1;end";
-                    Uri parse = Uri.parse(action);
-                    Intent intent = new Intent();
-                    intent.setData(parse);
-                    startActivity(intent);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Toast.makeText(this, "找不到Activity", Toast.LENGTH_SHORT).show();
-                }
+                Log.e(TAG, "onClick: 取消订阅");
+                UpsPushManager.unRegister(this);
                 break;
             case R.id.btn_set_alias:
+                Log.e(TAG, "onClick: 别名订阅");
                 UpsPushManager.setAlias(this, "ups");
                 break;
             case R.id.btn_unset_alias:
+                Log.e(TAG, "onClick: 取消别名订阅");
                 UpsPushManager.unSetAlias(this, "ups");
                 break;
             case R.id.btn_server_push:
+                Log.e(TAG, "onClick: 服务推送");
                 break;
             default:
                 break;
         }
-    }
-
-    /**
-     *
-     */
-    private void intentToUri() {
-        Intent intent = new Intent(this, TestActivity.class);
-        intent.putExtra("key", "value");
-        intent.putExtra("key1", "value1");
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        String toUri = intent.toUri(Intent.URI_INTENT_SCHEME);//这个值可以打开TestActivity
-        //intent:#Intent;launchFlags=0x10000000;component=cn.zontek.smartcommunity/com.meizu.upspushdemo.TestActivity;S.key=value;S.key1=value1;end
-        KLog.e(toUri);
-
-        Intent hwIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.baidu.com"));
-        hwIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        String toUri1 = hwIntent.toUri(Intent.URI_INTENT_SCHEME);
-        //intent://www.baidu.com#Intent;scheme=https;launchFlags=0x10000000;end
-        KLog.e(toUri1);
-    }
-
-    private void hwIntentUri() {
-        Uri uri = Uri.parse("zontek://com.meizu.upspushdemo/notify_detail?key=value&key1=value1&key2=value2");
-//        Uri uri = Uri.parse("zontek://cn.zontek.smartcommunity?key=value&key1=value1&key2=value2");
-        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        String toUri = intent.toUri(Intent.URI_INTENT_SCHEME);
-        //intent://cn.zontek.smartcommunity?key=value&key1=value1&key2=value2#Intent;scheme=zontek;launchFlags=0x10000000;end
-        KLog.e(toUri);
     }
 
     @Override
@@ -202,11 +115,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
 
     public void refreshLogInfo() {
-        String AllLog = "";
+        StringBuilder AllLog = new StringBuilder();
         for (String log : logList) {
-            AllLog = AllLog + log + "\n\n";
+            AllLog.append(log).append("\n\n");
         }
-        mLogView.setText(AllLog);
+        mLogView.setText(AllLog.toString());
     }
 
 
@@ -239,12 +152,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                 break;
                         }
 
-                        KLog.e("channel which " + which + " company " + Company.fromValue(which));
+                        UpsLogger.e(this, "channel which " + which + " company " + Company.fromValue(which));
                         UpsDemoApplication.sendMessage("使用 " + channelName + " 推送通道");
                     }
                 });
         builder.create().show();
     }
-
-
 }

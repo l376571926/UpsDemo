@@ -4,11 +4,10 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.meizu.upspushsdklib.UpsPushManager;
 
@@ -36,7 +35,7 @@ public class UpsPermissionActivity extends Activity {
             }
             if (hasPermission) {
                 Toast.makeText(this, "权限开启成功", Toast.LENGTH_SHORT).show();
-                UpsPushManager.register(this, MainActivity.UPS_APP_ID, MainActivity.UPS_APP_KEY);
+                UpsPushManager.register(this, BuildConfig.MEIZU_UPS_APP_ID, BuildConfig.MEIZU_UPS_APP_KEY);
             } else {
                 Toast.makeText(this, "权限开启失败", Toast.LENGTH_SHORT).show();
             }

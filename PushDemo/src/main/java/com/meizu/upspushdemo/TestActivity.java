@@ -30,8 +30,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import androidx.core.app.ShareCompat;
-
 import com.socks.library.KLog;
 
 public class TestActivity extends Activity {

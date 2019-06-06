@@ -1,120 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <RelativeLayout
+    <data>
+
+        <variable
+            name="handler"
+            type="android.view.View.OnClickListener" />
+    </data>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingTop="2dip"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingBottom="@dimen/activity_vertical_margin">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/layout_mode"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_margin_top"
-            android:orientation="horizontal">
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingTop="2dip"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingBottom="@dimen/activity_vertical_margin">
 
-            <Button
-                android:id="@+id/btn_enable_direct_mode"
+            <LinearLayout
+                android:id="@+id/layout_mode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="启用直连模式" />
+                android:layout_marginTop="@dimen/activity_margin_top"
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/btn_disable_direct_mode"
+                <Button
+                    android:id="@+id/btn_enable_direct_mode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="@{handler::onClick}"
+                    android:text="启用直连模式" />
+
+                <Button
+                    android:id="@+id/btn_disable_direct_mode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="@{handler::onClick}"
+                    android:text="禁用直连模式" />
+
+                <Button
+                    android:id="@+id/btn_choose_company_channel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="@{handler::onClick}"
+                    android:text="选择通道" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_register"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="禁用直连模式" />
+                android:layout_below="@+id/layout_mode"
+                android:layout_marginTop="@dimen/activity_margin_top"
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/btn_choose_company_channel"
+                <Button
+                    android:id="@+id/btn_register"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="@{handler::onClick}"
+                    android:text="订阅" />
+
+                <Button
+                    android:id="@+id/btn_unregister"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="@{handler::onClick}"
+                    android:text="取消订阅" />
+
+                <Button
+                    android:id="@+id/btn_server_push"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="@{handler::onClick}"
+                    android:text="MiPUshSDk" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_alias_subscribe"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="选择通道" />
+                android:layout_below="@+id/layout_register"
+                android:layout_marginTop="@dimen/activity_margin_top"
+                android:orientation="horizontal">
 
-        </LinearLayout>
+                <Button
+                    android:id="@+id/btn_set_alias"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="@{handler::onClick}"
+                    android:text="别名订阅" />
 
-        <LinearLayout
-            android:id="@+id/layout_register"
+                <Button
+                    android:id="@+id/btn_unset_alias"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="@{handler::onClick}"
+                    android:text="取消别名订阅" />
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/layout_mode"
-            android:layout_marginTop="@dimen/activity_margin_top"
-            android:orientation="horizontal">
+            android:layout_marginTop="10dp"
+            android:scrollbars="vertical">
 
-            <Button
-                android:id="@+id/btn_register"
+            <TextView
+                android:id="@+id/log"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="订阅" />
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:singleLine="false"
+                android:text="我是Log"
+                android:textSize="16sp" />
+        </ScrollView>
 
-            <Button
-                android:id="@+id/btn_unregister"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="取消订阅" />
+    </LinearLayout>
 
-            <Button
-                android:id="@+id/btn_server_push"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="MiPUshSDk"
-                android:visibility="gone" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/layout_alias_subscribe"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/layout_register"
-            android:layout_marginTop="@dimen/activity_margin_top"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/btn_set_alias"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="别名订阅" />
-
-            <Button
-                android:id="@+id/btn_unset_alias"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="取消别名订阅" />
-        </LinearLayout>
-
-    </RelativeLayout>
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:scrollbars="vertical">
-
-        <TextView
-            android:id="@+id/log"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:singleLine="false"
-            android:textSize="16sp" />
-    </ScrollView>
-
-</LinearLayout>
+</layout>
